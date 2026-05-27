@@ -1,0 +1,31 @@
+dataset:
+  train_path: "backend/data/raw/mitbih_train.csv"
+  test_path: "backend/data/raw/mitbih_test.csv"
+
+model:
+  output_dir: "backend/models"
+  model_path: "backend/models/random_forest_model.joblib"
+  scaler_path: "backend/models/scaler.joblib"
+  selector_path: "backend/models/feature_selector.joblib"
+  metadata_path: "backend/models/model_metadata.json"
+
+training:
+  random_state: 42
+  selected_feature_count: 60
+  n_estimators: 300
+
+features:
+  use_raw_signal: true
+  use_extracted_features: true
+
+reports:
+  output_dir: "backend/reports"
+  figures_dir: "backend/reports/figures"
+  tables_dir: "backend/reports/tables"
+
+classes:
+  "0": "Normal beat"
+  "1": "Supraventricular premature beat"
+  "2": "Premature ventricular contraction"
+  "3": "Fusion beat"
+  "4": "Unknown beat"
