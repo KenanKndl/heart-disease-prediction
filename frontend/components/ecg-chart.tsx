@@ -10,6 +10,8 @@ import {
   YAxis,
 } from "recharts";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 type EcgChartProps = {
   signal: number[];
 };
@@ -21,37 +23,41 @@ export function EcgChart({ signal }: EcgChartProps) {
   }));
 
   return (
-    <div className="h-[320px] w-full rounded-2xl border bg-white p-4 shadow-sm">
-      <div className="mb-3">
-        <h3 className="text-lg font-semibold text-slate-900">ECG Signal</h3>
-        <p className="text-sm text-slate-500">
+    <Card className="border-border/70 bg-card shadow-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl">ECG Signal</CardTitle>
+        <p className="text-sm leading-6 text-muted-foreground">
           187-point heartbeat segment from the MIT-BIH dataset.
         </p>
-      </div>
-
-      <ResponsiveContainer width="100%" height="82%">
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="point"
-            tick={{ fontSize: 12 }}
-            label={{
-              value: "Signal Point",
-              position: "insideBottom",
-              offset: -5,
-            }}
-          />
-          <YAxis tick={{ fontSize: 12 }} />
-          <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="value"
-            strokeWidth={2}
-            dot={false}
-            name="Amplitude"
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+      </CardHeader>
+      <CardContent>
+        <div className="h-[320px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="point"
+                tick={{ fontSize: 12 }}
+                label={{
+                  value: "Signal Point",
+                  position: "insideBottom",
+                  offset: -5,
+                }}
+              />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="currentColor"
+                strokeWidth={2}
+                dot={false}
+                name="Amplitude"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
