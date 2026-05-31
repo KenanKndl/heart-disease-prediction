@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getModelInfo, ModelInfo } from "@/lib/api";
 import { LandingHero } from "../components/landing-hero";
@@ -10,14 +10,10 @@ import { PipelineSummary } from "@/components/pipeline-summary";
 
 export default function HomePage() {
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
-  const [isLoadingModelInfo, setIsLoadingModelInfo] = useState(true);
+  // isLoadingModelInfo stateni sadece hata yönetimini ve loading anını farklı şekilde 
+  // yönetmek istersen diye bırakıyoruz, istersen onu da silebilirsin.
+  const [isLoadingModelInfo, setIsLoadingModelInfo] = useState(true); 
   const [error, setError] = useState<string | null>(null);
-
-  const apiStatusText = useMemo(() => {
-    if (isLoadingModelInfo) return "Connecting to backend...";
-    if (modelInfo) return "Backend connected";
-    return "Backend unavailable";
-  }, [isLoadingModelInfo, modelInfo]);
 
   useEffect(() => {
     async function loadModelInfo() {
@@ -49,21 +45,22 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <LandingHero
-        apiStatusText={apiStatusText}
-        isConnected={Boolean(modelInfo)}
-      />
+      {/* Hata veren proplar kaldırıldı, LandingHero artık temiz çağrılıyor */}
+      <LandingHero />
 
-      <section className="px-6 py-12">
-        <div className="mx-auto max-w-[1320px]">
-          <div className="mb-6 flex flex-col gap-2">
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+      <section className="border-t border-border/40 px-6 py-24">
+        {/* Ortak genişlik: 1200px */}
+        <div className="mx-auto max-w-[1200px]">
+          <div className="mb-10 max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
               Model Overview
             </p>
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+
+            <h2 className="mt-4 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
               Performance summary
             </h2>
-            <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+
+            <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
               Key evaluation metrics and feature selection details from the
               trained ECG heartbeat classification pipeline.
             </p>
@@ -77,11 +74,13 @@ export default function HomePage() {
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <MetricCard
-              title="Accuracy"
+              title="Selected Features"
               value={
-                accuracy !== undefined ? `${(accuracy * 100).toFixed(2)}%` : "-"
+                selectedFeatureCount && totalFeatureCount
+                  ? `${selectedFeatureCount} / ${totalFeatureCount}`
+                  : "-"
               }
-              description="Overall test accuracy"
+              description="Selected using SelectKBest"
             />
 
             <MetricCard
@@ -101,28 +100,46 @@ export default function HomePage() {
               }
               description="Minority class sensitivity"
             />
-
+            
             <MetricCard
-              title="Selected Features"
+              title="Accuracy"
               value={
-                selectedFeatureCount && totalFeatureCount
-                  ? `${selectedFeatureCount} / ${totalFeatureCount}`
-                  : "-"
+                accuracy !== undefined ? `${(accuracy * 100).toFixed(2)}%` : "-"
               }
-              description="Selected using SelectKBest"
+              description="Overall test accuracy"
+              isHighlighted={true}
             />
           </div>
         </div>
       </section>
 
-      <section id="methodology" className="px-6 py-12">
-        <div className="mx-auto max-w-[1320px]">
+      <section id="methodology" className="px-6 pb-24">
+        {/* Ortak genişlik: 1200px */}
+        <div className="mx-auto max-w-[1200px]">
+          {/* Karttan taşınan başlık - Tam hizalı */}
+          <div className="mb-10 max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              Methodology
+            </p>
+
+            <h2 className="mt-4 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+              From raw signal to prediction.
+            </h2>
+
+            <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
+              The workflow follows a compact machine learning pipeline: load a
+              heartbeat signal, extract meaningful features, select the strongest
+              inputs and classify the final rhythm pattern.
+            </p>
+          </div>
+
           <PipelineSummary />
         </div>
       </section>
 
-      <section className="px-6 py-12 pb-20">
-        <div className="mx-auto max-w-[1320px]">
+      <section className="px-6 pb-24">
+        {/* Ortak genişlik: 1200px */}
+        <div className="mx-auto max-w-[1200px]">
           <LandingCta />
         </div>
       </section>
